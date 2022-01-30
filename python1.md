@@ -1,7 +1,7 @@
 
 ## 洛谷P2181 对角线python题解
 ### 关于题目
-![图片](https://user-images.githubusercontent.com/91021948/151704643-3729ef5e-ccf0-4023-aca2-97ee45c69132.png)
+![图片](https://user-images.githubusercontent.com/91021948/151704897-a62f0df8-9734-41bd-b510-c2e8e5d50f61.png)
 
 - 这道题对于python的源码书写并不难，个人感觉难的反倒是这里面的数学知识
 - 一开始看到题目的时候，错以为是问对角线的个数，然后用公式：n边形对角线=n（n-3）/2
@@ -10,8 +10,8 @@
 ### n边形对角线交点个数的数学公式
 #### 交点数=n(n-1)(n-2)(n-3)/24
 
-###所以这道题python解法的是：
-####n=int(input())
+所以这道题python解法的是：
+n=int(input())
 b=n*(n-1)*(n-2)*(n-3)//24
 b=int(b)
 print(b)
