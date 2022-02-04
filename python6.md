@@ -8,8 +8,8 @@
 #### 然后我的想法是两次循环嵌套，第一次是接收小方块位置的输入以及计算蒸发的小方块数量
 第二次是将原来的大立方体中所有小立方块检验做标志，将被蒸发的小立方块依次累加，最后再减去这个和即可得答案
 ### 源码如下：
-(这是第一次循环)
-![图片](https://user-images.githubusercontent.com/91021948/152495283-953c4f8c-f62b-43c2-899d-5e0052adc295.png)
-(这是第二次循环)
-![图片](https://user-images.githubusercontent.com/91021948/152495395-f1bc2916-b4ce-4cdf-88a7-e2697a4939ee.png)
+- (这是第一次循环)
+- ![图片](https://user-images.githubusercontent.com/91021948/152495283-953c4f8c-f62b-43c2-899d-5e0052adc295.png)
+- (这是第二次循环)
+- ![图片](https://user-images.githubusercontent.com/91021948/152495395-f1bc2916-b4ce-4cdf-88a7-e2697a4939ee.png)
 #### 希望能对你有用
