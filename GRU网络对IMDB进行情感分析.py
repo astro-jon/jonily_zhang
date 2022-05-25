@@ -16,6 +16,7 @@ from torchtext.vocab import Vectors
 
 import torchtext
 from torchtext.legacy.data import Field,TabularDataset,Iterator,BucketIterator
+# 定义文本切分方法，直接使用空格切分即可
 mytokenize = lambda x: x.split()#lambda定义一个匿名函数，这里x为输入，x.split()为输出
 TEXT = torchtext.legacy.data.Field(sequential=True,tokenize=mytokenize,include_lengths = True,
                                   use_vocab=True,batch_first = True,fix_length=200)
