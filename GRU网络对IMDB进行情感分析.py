@@ -20,11 +20,32 @@ from torchtext.legacy.data import Field,TabularDataset,Iterator,BucketIterator
 mytokenize = lambda x: x.split()#lambda定义一个匿名函数，这里x为输入，x.split()为输出
 TEXT = torchtext.legacy.data.Field(sequential=True,tokenize=mytokenize,include_lengths = True,
                                   use_vocab=True,batch_first = True,fix_length=200)
+# Field参数说明
+# squential：数据是否为序列数据，默认为Ture。如果为False，则不能使用分词。
+# use_vocab：是否使用词典，默认为True。如果为False，那么输入的数据类型必须是数值类型(即使用vocab转换后的)。
+# init_token：文本的其实字符，默认为None。
+# eos_token：文本的结束字符，默认为None。
+# fix_length：所有样本的长度，不够则使用pad_token补全。默认为None，表示灵活长度。
+# tensor_type：把数据转换成的tensor类型 默认值为torch.LongTensor。
+# preprocessing：预处理pipeline， 用于分词之后、数值化之前，默认值为None。
+# postprocessing：后处理pipeline，用于数值化之后、转换为tensor之前，默认为None。
+# lower：是否把数据转换为小写，默认为False；
+# tokenize：分词函数，默认为str.split。（tokenize必须是个函数，且返回的是一个列表）
+# include_lengths：是否返回一个已经补全的最小batch的元组和和一个包含每条数据长度的列表，默认值为False。
+# batch_first：batch作为第一个维度；
+# pad_token：用于补全的字符，默认为<pad>。
+# unk_token：替换袋外词的字符，默认为<unk>。
+# pad_first：是否从句子的开头进行补全，默认为False；
+# truncate_first：是否从句子的开头截断句子，默认为False；
+# stop_words：停用词；
+
 LABEL = torchtext.legacy.data.Field(sequential = False,use_vocab = False,pad_token=None,unk_token = None)
+# 对所要读取的数据集的列进行处理
 train_test_fields = [
     ("text",TEXT),
     ("label",LABEL)#这里位置别弄反
 ]
+# 读取数据
 traindata,testdata = torchtext.legacy.data.TabularDataset.splits(
     path="D:/IMDB电影评论情感分析",format = "csv",
     train="imdb_train.csv",fields=train_test_fields,
