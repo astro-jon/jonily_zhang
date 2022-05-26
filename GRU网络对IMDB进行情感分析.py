@@ -50,20 +50,33 @@ traindata,testdata = torchtext.legacy.data.TabularDataset.splits(
     path="D:/IMDB电影评论情感分析",format = "csv",
     train="imdb_train.csv",fields=train_test_fields,
     test = "imdb_test.csv",skip_header = True)
+# 如果有列名，设置skip_header为True可以不把列名变成数据处理
 
+# Vectors导入预训练好的词向量文件
 vec = Vectors("glove.6B.100d.txt","D:/预训练好的词向量")
+# 使用训练集构建单词表，导入预训练好的词嵌入
 TEXT.build_vocab(traindata,max_size=20000,vectors = vec)
 LABEL.build_vocab(traindata)
+# 训练集、验证集和测试集定义为加载器
 BATCH_SIZE = 32
 train_iter = torchtext.legacy.data.BucketIterator(traindata,batch_size=BATCH_SIZE)
 test_iter = torchtext.legacy.data.BucketIterator(testdata,batch_size=BATCH_SIZE)
 
 class GRUNet(nn.Module):
     def __init__(self,vocab_size,embedding_dim,hidden_dim,layer_dim,output_dim):
+      """
+      vocab_size:词典长度
+      embedding_dim：词向量的维度
+      hidden_dim：GRU神经元个数
+      layer_dim：GRU层数
+      output_dim：隐藏层输出的维度(分类的数量）
+      """
         super(GRUNet,self).__init__()
         self.hidden_dim = hidden_dim
         self.layer_dim = layer_dim
+#         对文本进行词向量处理
         self.embedding = nn.Embedding(vocab_size,embedding_dim)
+#        GRU+全连接层
         self.gru = nn.GRU(embedding_dim,hidden_dim,layer_dim,batch_first=True)
         self.fc1 = nn.Sequential(
             nn.Linear(hidden_dim,hidden_dim),
@@ -72,25 +85,34 @@ class GRUNet(nn.Module):
             nn.Linear(hidden_dim,output_dim))
     def forward(self,x):
         embeds = self.embedding(x)
-        r_out,h_n = self.gru(embeds,None)
+        r_out,h_n = self.gru(embeds,None)# None表示初始的hidden state为0
+#         选取最后一个时间点的out输出
         out = self.fc1(r_out[:,-1,:])
         return out
-      
+
+#   初始化网络
 vocab_size=len(TEXT.vocab)
-embedding_dim = vec.dim
+embedding_dim = vec.dim #词向量的维度
 hidden_dim= 128
 layer_dim = 1
 output_dim = 2
 grumodel = GRUNet(vocab_size,embedding_dim,hidden_dim,layer_dim,output_dim)
 grumodel
 
+# 将导入的词向量作为embedding.weight的初始值
 grumodel.embedding.weight.data.copy_(TEXT.vocab.vectors)
+# 将无法识别的词'<unk>''<pad>'的向量初始化为0
 UNK_IDX = TEXT.vocab.stoi[TEXT.unk_token]
 PAD_IDX = TEXT.vocab.stoi[TEXT.pad_token]
 grumodel.embedding.weight.data[UNK_IDX] = torch.zeros(vec.dim)
 grumodel.embedding.weight.data[PAD_IDX] = torch.zeros(vec.dim)
 
 def train_model(model,traindataloader,testdataloader,criterion,optimizer,num_epochs = 25):
+  """
+  criterion:损失函数
+  optimizer:优化方法
+  num_epochs:训练的轮次
+  """
     train_loss_all=[]
     train_acc_all=[]
     test_loss_all=[]
