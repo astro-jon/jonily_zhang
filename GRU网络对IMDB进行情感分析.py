@@ -75,9 +75,23 @@ class GRUNet(nn.Module):
         self.hidden_dim = hidden_dim
         self.layer_dim = layer_dim
 #         对文本进行词向量处理
-        self.embedding = nn.Embedding(vocab_size,embedding_dim)
+#     在 PyTorch 中，针对词向量有一个专门的层 nn.Embedding ，用来实现词与词向量的映射。
+#     nn.Embedding 相当于一个词表，形状为 (num_embedings, embedding_dim) ，其中 num_embedding 表示词表的长度，embedding_dim 表示词向量的维度。
+#     如果输入张量中不同词的个数超过词表的长度，就会报数组越界异常。
+#     如果 Embedding 层的输入形状为 NxM（N为batch_size，M是序列的长度），则输出的形状是 N x M x embedding_dim.
+#     注意：输入必须是 LongTensor 类型，可以通过 tensor.long() 方法转成 LongTensor。
 #        GRU+全连接层
         self.gru = nn.GRU(embedding_dim,hidden_dim,layer_dim,batch_first=True)
+  """
+        input_size:输出序列的一维向量的长度
+        hidden_size:隐藏层输出特征的长度
+        num_size:隐藏层堆叠的高度，用于增加隐层的深度
+        bias:是否需要偏置b
+        batch_first:用于确定batch_size是否需要放到输入输出数据形状的最前面
+        dropout:默认0，若非0，则为dropout率
+        bidirectional:是否为双向LSTM，默认为否
+  """
+#    Embedding 做的事，从数据中自动学习到输入空间的信息表示的映射f，由于上述计算中没有涉及到label ，所以 Embedding 的训练过程是无监督的。
         self.fc1 = nn.Sequential(
             nn.Linear(hidden_dim,hidden_dim),
             torch.nn.Dropout(0.5),
