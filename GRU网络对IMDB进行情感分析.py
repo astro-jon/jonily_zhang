@@ -149,6 +149,13 @@ def train_model(model,traindataloader,testdataloader,criterion,optimizer,num_epo
             textdata,target = batch.text[0],batch.label
             out = model(textdata)
             pre_lab = torch.argmax(out,1)
+#             numpy.argmax(array, axis) ：用于返回一个numpy数组中最大值的索引值。当一组中同时出现几个最大值时，返回第一个最大值的索引值。
+#             对于二维数组：axis=0，返回的是列方向最大值的索引值；axis=1，返回的是行方向最大值的索引值
+#             对于高维数组：（主要用于lstm中）三维计算之后降维，将返回一个二维数组。
+#             假设输入一个m*n*p维的矩阵：
+#             axis=0，舍去m，返回一个n*p维的矩阵
+#             axis=1，舍去n，返回一个m*p维的矩阵
+#             axis=2，舍去p，返回一个n*m维的矩阵
             loss = criterion(out,target)
             optimizer.zero_grad()
             loss.backward()
